@@ -11,12 +11,6 @@ echo -e "-> docker compose exec php symfony new . --no-git --version=\"lts\""
 read s1
 docker compose exec php symfony new . --no-git --version="lts"
 
-
-echo -e "-> docker compose exec php symfony composer require symfony/monolog-bundle"
-read s2
-
-docker compose exec php symfony composer require symfony/monolog-bundle
-
 echo -e "-> compose exec php symfony composer require --dev symfony/maker-bundle"
 read s3
 docker compose exec php symfony composer require --dev symfony/maker-bundle
@@ -40,6 +34,7 @@ read q5
 
 if [[ "$q5" == "y" || "$q5" == "yes" ]]; then
     docker compose exec php symfony console doctrine:database:create
+    echo -e ' '
 fi
 
 echo -e "-> docker compose exec php symfony composer require api"
@@ -54,8 +49,6 @@ if [[ "$q7" == "y" || "$q7" == "yes" ]]; then
     docker compose exec php symfony composer require lexik/jwt-authentication-bundle
     docker compose exec php symfony console lexik:jwt:generate-keypair
 fi
-
-chown -R $USER:$USER app/
 
 docker -e compose exec php symfony console about
 
