@@ -95,13 +95,15 @@ docker compose exec php symfony console make:migration
 docker compose exec php symfony console doctrine:migrations:migrate
 ```
 
-## cache clear
+
+### End of the installation process
+
+
+# Misc. (useful tools)
 
 ```sh
 docker compose exec php symfony console cache:clear
 ```
-
-## Misc. (useful tools)
 
 ```sh
 docker compose exec php symfony console debug:router

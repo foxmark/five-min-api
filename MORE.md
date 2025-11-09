@@ -1,15 +1,15 @@
-# Part 1: Core Concepts
+# Core Concepts
 
 Docs: [API Platform Documentation](https://api-platform.com/docs/)
 
  - ApiResource - Defines the endpoint structure (entity or DTO)
  - StateProvider - To retrieve data exposed by the API
  - StateProcessor - Mutates application state during POST, PUT, PATCH or DELETE operations
- - Validation -
+ - Validation
  - Security Voters - The easiest and recommended way to hook custom access control logic
  - Filters
 
- ## 1.1 ApiResource
+ ## 1. ApiResource
 
 #### **`src/Entity/Folder.php`**
  ```php 
@@ -46,3 +46,187 @@ class File
 }
  ```
 
+### Endpoint scope
+
+
+#### **`src/Entity/Folder.php`**
+```php
+<?php
+
+namespace App\Entity;
+
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+
+#[ApiResource(
+    description: 'A folder',
+    operations: [
+        new Get(),
+        new GetCollection()
+    ],
+    routePrefix: '/disk',
+)]
+class Folder
+{
+    // ....
+}
+```
+
+#### **`src/Entity/Folder.php`**
+```php
+<?php
+
+namespace App\Entity;
+
+use Symfony\Component\Serializer\Annotation\Groups;
+
+#[ApiResource(
+    normalizationContext: ['groups' => ['product:read']],
+    denormalizationContext: ['groups' => ['product:write']]
+)]
+class Folder
+{
+    #[Groups(['product:read', 'product:write'])]
+    private ?string $name = null;
+
+    #[Groups(['product:read'])]
+    private ?\DateTimeImmutable $createdAt = null;
+```
+
+
+### Supported output formats
+
+#### **`config/packages/api_platform.yaml`**
+```yaml
+api_platform:
+    formats:
+      jsonld: [ 'application/ld+json' ]
+      json: [ 'application/json' ]
+      csv: [ 'text/csv' ]
+      xml:	['application/xml']
+```
+
+## 2. StateProvider
+
+To retrieve data exposed by the API - used during `GET` calls
+
+#### **`src/Entity/Folder.php`**
+```php
+<?php
+
+namespace App\Entity;
+
+use ApiPlatform\Metadata\ApiResource;
+
+use App\State\FolderStateProvider;
+
+#[ApiResource(
+    provider: FolderStateProvider::class,
+)]
+class Folder
+{
+    /// ....
+}
+```
+
+#### **`src/State/FolderStateProvider.php`**
+
+```php
+<?php
+
+namespace App\State;
+
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProviderInterface;
+use ApiPlatform\Metadata\CollectionOperationInterface;
+
+class FolderStateProvider implements ProviderInterface
+{
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
+    {
+        if ($operation instanceof CollectionOperationInterface) {
+            return $this->getPaginatedCollection($context, $operation);
+        }
+
+        return $this->getItem($uriVariables['id']);
+    }
+}
+```
+
+## 3. StateProcessor
+
+Mutates application state during `POST`, `PUT`, `PATCH` or `DELETE` operations
+
+#### **`src/Entity/Folder.php`**
+```php
+<?php
+
+namespace App\Entity;
+
+use ApiPlatform\Metadata\ApiResource;
+
+use App\State\FolderStateProcessor;
+
+#[ApiResource(
+    processor: FolderStateProcessor::class,
+)]
+class Folder
+{
+    /// ....
+}
+```
+
+#### **`src/State/FolderStateProcessor.php`**
+
+```php
+<?php
+
+namespace App\State;
+
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProcessorInterface;
+use ApiPlatform\Metadata\DeleteOperationInterface;
+
+class FolderStateProcessor implements ProcessorInterface
+{
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
+    {
+        if ($operation instanceof DeleteOperationInterface) {
+            // Handle deletion
+            return null;
+        }
+
+        // persist/update data
+        return $data;
+    }
+}
+```
+
+## 4. Validation
+
+```php
+<?php
+
+namespace App\Entity;
+
+use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Validator\Constraints as Assert;
+
+#[ApiResource]
+class Folder
+{
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255)]
+    private ?string $name = null;
+
+    #[Assert\Length(max: 512)]
+    private ?string $description = null;
+
+    #[Assert\NotBlank]
+    #[Assert\Date]
+    private ?\DateTimeImmutable $createdAt = null;
+}
+```
+
+### Custom validator
