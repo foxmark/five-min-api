@@ -205,6 +205,8 @@ class FolderStateProcessor implements ProcessorInterface
 
 ## 4. Validation
 
+#### **`src/Entity/Folder.php`**
+
 ```php
 <?php
 
@@ -230,3 +232,88 @@ class Folder
 ```
 
 ### Custom validator
+
+#### **`src/Entity/Folder.php`**
+
+```php
+<?php
+
+namespace App\Entity;
+
+use ApiPlatform\Metadata\ApiResource;
+use App\Validator\Constraints as CustomAssert;
+
+#[ApiResource]
+#[CustomAssert\CreatedAtDate()]
+class Folder
+{
+    // ...
+}
+```
+
+#### **`src/Validator/Constraints/CreatedAtDate.php`**
+
+```php
+<?php
+namespace App\Validator\Constraints;
+
+use Symfony\Component\Validator\Attribute\HasNamedArguments;
+use Symfony\Component\Validator\Constraint;
+
+#[\Attribute]
+class CreatedAtDate extends Constraint
+{
+    public string $message = 'created_at_date_conflict';s
+
+    #[HasNamedArguments]
+    public function __construct(?string $message = null)
+    {
+        if ($message) {
+            $this->message = $message;
+        }
+        parent::__construct();
+    }
+
+    public function getTargets(): string
+    {
+        return self::CLASS_CONSTRAINT;
+    }
+}
+```
+
+#### **`src/Validator/Constraints/CreatedAtDateValidator.php`**
+
+```php
+<?php
+namespace App\Validator\Constraints;
+
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+use Symfony\Component\Validator\Exception\UnexpectedValueException;
+use App\Entity\Folder;
+
+class CreatedAtDateValidator extends ConstraintValidator
+{
+    public function validate($value, Constraint $constraint)
+    {   
+        if (null === $value || '' === $value) {
+            return;
+        }
+
+       if (!$constraint instanceof CreatedAtDate) {
+            throw new UnexpectedTypeException($constraint, TrainingSessionDate::class);
+        }
+
+        if (!$value instanceof Folder) {
+            throw new UnexpectedValueException($value, 'Not instance of Folder');
+        }
+
+        if ($value->getCreatedAt()->format('U') < time() && is_null($value->getId())) {
+            $this->context->buildViolation('Creation date in the past')
+                ->atPath('createdAt')
+                ->addViolation();
+        }
+    }
+}
+```
