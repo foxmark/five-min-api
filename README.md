@@ -8,7 +8,7 @@
 ./install.sh
 ```
 
-### Your way:
+### Your Way:
 
 ```sh
 mkdir app
@@ -63,7 +63,7 @@ docker compose exec php symfony console about
 docker compose exec php symfony console make:entity
 ```
 
-#### Folder
+### Folder
 
  - name
  - description
@@ -72,7 +72,7 @@ docker compose exec php symfony console make:entity
  - path
  - parent
 
-#### File
+### File
 
  - name
  - description
@@ -83,25 +83,25 @@ docker compose exec php symfony console make:entity
  - path
  - folder
 
-### Generate migration from entities
+## Generate migration from entities
 
 ```sh
 docker compose exec php symfony console make:migration
 ```
 
-### Run migrations
+## Run migrations
 
 ```sh
 docker compose exec php symfony console doctrine:migrations:migrate
 ```
 
-### cache clear
+## cache clear
 
 ```sh
 docker compose exec php symfony console cache:clear
 ```
 
-### Misc. (useful tools)
+## Misc. (useful tools)
 
 ```sh
 docker compose exec php symfony console debug:router
