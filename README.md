@@ -2,6 +2,18 @@
 
 ## Installation
 
+### Lazy Way:
+
+```sh
+./install.sh
+```
+
+### Your way:
+
+```sh
+mkdir app
+```
+
 ```sh
 docker compose up -d
 ```
@@ -89,7 +101,7 @@ docker compose exec php symfony console doctrine:migrations:migrate
 docker compose exec php symfony console cache:clear
 ```
 
-### Misc.
+### Misc. (useful tools)
 
 ```sh
 docker compose exec php symfony console debug:router
