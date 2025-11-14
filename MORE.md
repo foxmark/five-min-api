@@ -69,7 +69,7 @@ use ApiPlatform\Metadata\GetCollection;
 )]
 class Folder
 {
-    // ....
+    // ...
 }
 ```
 
@@ -80,6 +80,7 @@ class Folder
 namespace App\Entity;
 
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ApiResource(
     normalizationContext: ['groups' => ['product:read']],
@@ -92,6 +93,12 @@ class Folder
 
     #[Groups(['product:read'])]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[Ignore]
+    private ?string $description = null;
+
+    #[ApiProperty(readable: false)]
+    private ?\DateTimeImmutable $updatedAt = null;
 ```
 
 
