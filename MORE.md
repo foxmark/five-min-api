@@ -302,7 +302,7 @@ class CreatedAtDateValidator extends ConstraintValidator
         }
 
        if (!$constraint instanceof CreatedAtDate) {
-            throw new UnexpectedTypeException($constraint, TrainingSessionDate::class);
+            throw new UnexpectedTypeException($constraint, CreatedAtDate::class);
         }
 
         if (!$value instanceof Folder) {
