@@ -20,6 +20,10 @@ read q3
 
 docker compose exec php symfony composer require --dev symfony/profiler-pack symfony/debug-bundle symfony/test-pack
 
+echo -e "run: docker compose exec php symfony composer require symfony/monolog-bundle (press any key)"
+read q31
+docker compose exec php symfony composer require symfony/monolog-bundle
+
 echo -e "run: compose exec php symfony composer require symfony/orm-pack --no-interaction --no-scripts (press any key)"
 read q4
 
@@ -58,6 +62,19 @@ if [[ "$q9" == "y" || "$q9" == "yes" ]]; then
     docker compose exec php symfony composer require lexik/jwt-authentication-bundle
     docker compose exec php symfony console lexik:jwt:generate-keypair
 fi
+
+echo "Do you want copy basic template files? (y/n): "
+read q5
+
+if [[ "$q5" == "y" || "$q5" == "yes" ]]; then
+    templates_dir="app/templates"
+
+    if [[ ! -d "$templates_dir" ]]; then
+        mkdir -p "app/templates"
+    fi
+    cp misc/basic_template/* app/templates
+fi
+
 
 docker compose exec php symfony console about
 
