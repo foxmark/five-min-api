@@ -7,9 +7,9 @@ fi
 source .env
 docker compose up -d
 
-echo -e "run: docker compose exec php symfony new . --no-git --version=\"lts\" (press any key)"
+echo -e "run: docker compose exec php symfony new . --version=\"lts\" (press any key)"
 read s1
-docker compose exec php symfony new . --no-git --version="lts"
+docker compose exec php symfony new . --version="lts"
 
 echo -e "run: compose exec php symfony composer require --dev symfony/maker-bundle (press any key)"
 read s2
