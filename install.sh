@@ -72,7 +72,7 @@ if [[ "$q5" == "y" || "$q5" == "yes" ]]; then
     if [[ ! -d "$templates_dir" ]]; then
         mkdir -p "app/templates"
     fi
-    cp misc/basic_template/* app/templates
+    cp -r misc/basic_template/* app/templates
 fi
 
 
