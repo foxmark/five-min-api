@@ -5,7 +5,8 @@
 ### Lazy Way:
 
 ```sh
-./install.sh```
+./install.sh
+```
 
 ### Your Way:
 
