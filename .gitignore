@@ -3,3 +3,4 @@
 app
 .vscode
 _local
+.env
