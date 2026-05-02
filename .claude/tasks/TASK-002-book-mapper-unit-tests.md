@@ -1,7 +1,7 @@
 # TASK-002: BookMapper — Unit Tests
-Status: in-progress
+Status: done
 Assignee: api-tester
-Phase: red
+Phase: done
 
 ---
 

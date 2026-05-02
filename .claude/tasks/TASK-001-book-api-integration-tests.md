@@ -1,7 +1,7 @@
 # TASK-001: Book API — Integration Tests (HTTP endpoints)
-Status: in-progress
+Status: done
 Assignee: api-tester
-Phase: red
+Phase: done
 
 ---
 

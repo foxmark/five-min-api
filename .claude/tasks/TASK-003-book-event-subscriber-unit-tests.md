@@ -1,7 +1,7 @@
 # TASK-003: BookEventSubscriber — Unit Tests
-Status: in-progress
+Status: done
 Assignee: api-tester
-Phase: red
+Phase: done
 
 ---
 
